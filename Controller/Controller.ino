@@ -1,5 +1,6 @@
   #include "Commands.h"
   #include "ESP_Now_Helper.h"
+  #include "Joystick_Helper.h"
 
 
   #define THIS_MAC "a0:dd:6c:b2:33:9c"
@@ -9,19 +10,24 @@
     delay(1000);
     Serial.println("===== RC Plane Booting =====");
     ESP_Now_Init();
+    Joystick_Init();
   }
+
+  bool data_response = false;
 
   void loop() {
     Handle_Commands();
 
     controller_message message;
-    message.x_axis = 1;
-    message.y_axis = 2; 
+    Joystick_Data joystick_data = ReadJoystick();
+    message.x_axis = joystick_data.x;
+    message.y_axis = joystick_data.y; 
     message.yaw = 3;
     message.thrust = 4;
-    message.reverse = false;
-    message.data_response = true;
-
+    message.reverse = joystick_data.select;
+    message.data_response = data_response;
+    data_response = !data_response;
     Send_Data(message);
+
     delay(2000);
   }
