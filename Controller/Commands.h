@@ -1,6 +1,13 @@
 #ifndef COMMANDS_H
 #define COMMANDS_H 
 
+enum Debug_Flag
+{
+  DBG_ESP_NOW,
+  DBG_JOYSTICK,
+  NUM_DEBUGS
+};
+
 enum Serial_Color
 {
   COLOR_Red,
@@ -10,6 +17,8 @@ enum Serial_Color
   NUM_COLORS
 };
 
-void Print_Color(Serial_Color color, String text);
+bool Debug_Enabled(Debug_Flag flag);
+void Serial_Print(String text, Debug_Flag flag);
+void Serial_Print(String text, Debug_Flag flag, Serial_Color color);
 
 #endif

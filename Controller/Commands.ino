@@ -17,7 +17,40 @@ String Commands_ToString[Num_Commands] =
   "Type"
 };
 
-void Print_Color(Serial_Color color, String text)
+bool Debug_ESP_NOW = false;
+bool Debug_Joystick = false;
+
+bool Debug_Enabled(Debug_Flag flag)
+{
+  switch(flag)
+  {
+    case DBG_ESP_NOW:
+      return Debug_ESP_NOW;
+      break;
+    case DBG_JOYSTICK:
+      return Debug_Joystick;
+      break;
+  }
+  return false;
+}
+
+void Serial_Print(String text, Debug_Flag flag)
+{
+  if (Debug_Enabled(flag))
+  {
+    Serial.println(text);
+  }
+}
+
+void Serial_Print(String text, Debug_Flag flag, Serial_Color color)
+{
+  if (Debug_Enabled(flag))
+  {
+    Print_Color(text, color);
+  }
+}
+
+void Print_Color(String text, Serial_Color color)
 {
   switch (color)
   {

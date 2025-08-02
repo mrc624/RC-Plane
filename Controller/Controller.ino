@@ -19,7 +19,7 @@
     Handle_Commands();
 
     controller_message message;
-    Joystick_Data joystick_data = ReadJoystick();
+    Joystick_Data joystick_data = ReadControlJoystick();
     message.x_axis = joystick_data.x;
     message.y_axis = joystick_data.y; 
     message.yaw = 3;
@@ -28,6 +28,14 @@
     message.data_response = data_response;
     data_response = !data_response;
     Send_Data(message);
+
+    Serial.println("\nControl Data:");
+    Serial.print("Control X axis: ");
+    Serial.println(joystick_data.x);
+    Serial.print("Control Y axis: ");
+    Serial.println(joystick_data.y);
+    Serial.print("Control Select: ");
+    Serial.println(joystick_data.select);
 
     delay(2000);
   }
