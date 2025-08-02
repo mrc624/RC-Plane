@@ -21,5 +21,6 @@ typedef struct Joystick_Data
 
 void Joystick_Init();
 Joystick_Data ReadControlJoystick();
+Joystick_Data ReadThrustJoystick();
 
 #endif
