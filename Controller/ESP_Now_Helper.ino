@@ -80,7 +80,7 @@ bool Send_Data(Controller_Message* message)
   digitalWrite(LED_PIN, HIGH); // Turn on LED while sending data
   // Send the message
   esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *) message, sizeof(&message));
-  
+
   digitalWrite(LED_PIN, LOW);
   if (result == ESP_OK)
   {

@@ -11,6 +11,7 @@
     Serial.println("===== RC Plane Booting =====");
     ESP_Now_Init();
     Joystick_Init();
+    Set_Center_Values();
   }
 
   bool data_response = false;
@@ -21,6 +22,5 @@
     Controller_Message* message = Write_Message_With_Joystick_Data();
     message->data_response = true;
     Print_Message(message);
-
     delay(2000);
   }

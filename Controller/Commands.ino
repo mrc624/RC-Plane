@@ -17,8 +17,8 @@ String Commands_ToString[Num_Commands] =
   "Type"
 };
 
-bool Debug_ESP_NOW = false;
-bool Debug_Joystick = false;
+bool Debug_ESP_NOW = true;
+bool Debug_Joystick = true;
 
 bool Debug_Enabled(Debug_Flag flag)
 {
