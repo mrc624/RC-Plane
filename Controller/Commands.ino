@@ -34,11 +34,23 @@ bool Debug_Enabled(Debug_Flag flag)
   return false;
 }
 
+void Serial_Println(String text, Debug_Flag flag)
+{
+  Serial_Print(text, flag);
+  Serial.println();
+}
+
+void Serial_Println(String text, Debug_Flag flag, Serial_Color color)
+{
+  Serial_Print(text, flag, color);
+  Serial.println();
+}
+
 void Serial_Print(String text, Debug_Flag flag)
 {
   if (Debug_Enabled(flag))
   {
-    Serial.println(text);
+    Serial.print(text);
   }
 }
 
@@ -55,19 +67,19 @@ void Print_Color(String text, Serial_Color color)
   switch (color)
   {
     case COLOR_Red:
-      Serial.println("\033[31m" + text + "\033[0m");
+      Serial.print("\033[31m" + text + "\033[0m");
       break;
     case COLOR_Green:
-      Serial.println("\033[32m" + text + "\033[0m");
+      Serial.print("\033[32m" + text + "\033[0m");
       break;
     case COLOR_Blue:
-      Serial.println("\033[34m" + text + "\033[0m");
+      Serial.print("\033[34m" + text + "\033[0m");
       break;
     case COLOR_Yellow:
-      Serial.println("\033[33m" + text + "\033[0m");
+      Serial.print("\033[33m" + text + "\033[0m");
       break;
     default:
-      Serial.println(text);
+      Serial.print(text);
       break;
   }
 }

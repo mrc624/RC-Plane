@@ -8,7 +8,7 @@ esp_now_peer_info_t peerInfo;
 // Callback when data is sent
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status)
 {
-  Serial_Print(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail", DBG_ESP_NOW ,status == ESP_NOW_SEND_SUCCESS ? COLOR_Green : COLOR_Red);
+  Serial_Println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail", DBG_ESP_NOW ,status == ESP_NOW_SEND_SUCCESS ? COLOR_Green : COLOR_Red);
 }
 
 // Callback function that will be executed when data is received
@@ -17,15 +17,15 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len)
   digitalWrite(LED_PIN, HIGH); // Turn on LED while receiving data
   Plane_Message msg;
   memcpy(&msg, incomingData, sizeof(msg));
-  Serial_Print("Bytes received: " + (String)len, DBG_ESP_NOW);
-  Serial_Print("Plane Message: " + (String)msg.message, DBG_ESP_NOW);
+  Serial_Println("Bytes received: " + (String)len, DBG_ESP_NOW);
+  Serial_Println("Plane Message: " + (String)msg.message, DBG_ESP_NOW);
   digitalWrite(LED_PIN, LOW);
 }
 
 hw_timer_t * Retry_Init_Timer = NULL;
 
 void IRAM_ATTR onTimerRetry() {
-  Serial_Print("Trying to initialize ESP Now", DBG_ESP_NOW);
+  Serial_Println("Trying to initialize ESP Now", DBG_ESP_NOW);
   ESP_Now_Init();
 }
 
@@ -46,7 +46,7 @@ bool ESP_Now_Init()
 
   if (esp_now_init() != ESP_OK)
   {
-    Serial_Print("Failed initializing ESP Now, trying again in 1 second",DBG_ESP_NOW ,COLOR_Red);
+    Serial_Println("Failed initializing ESP Now, trying again in 1 second",DBG_ESP_NOW ,COLOR_Red);
     timerAttachInterrupt(Retry_Init_Timer, &onTimerRetry); // Run the timer to try again
     return false;
   }
@@ -66,10 +66,10 @@ bool ESP_Now_Init()
   if (esp_now_add_peer(&peerInfo) != ESP_OK)
   {
     timerAttachInterrupt(Retry_Init_Timer, &onTimerRetry);; // Run the timer to try again
-    Serial_Print("Failed adding peer, trying again in 1 second", DBG_ESP_NOW, COLOR_Red);
+    Serial_Println("Failed adding peer, trying again in 1 second", DBG_ESP_NOW, COLOR_Red);
     return false;
   }
-  Serial_Print("ESP Now Initialized", DBG_ESP_NOW);
+  Serial_Println("ESP Now Initialized", DBG_ESP_NOW);
   ESP_Now_Initialized = true;
   timerDetachInterrupt(Retry_Init_Timer);
   return true;
@@ -84,10 +84,10 @@ bool Send_Data(Controller_Message* message)
   digitalWrite(LED_PIN, LOW);
   if (result == ESP_OK)
   {
-    Serial_Print("Sent with success",DBG_ESP_NOW ,COLOR_Green);
+    Serial_Println("Sent with success",DBG_ESP_NOW ,COLOR_Green);
     return true;
   }
-  Serial_Print("Error sending the data",DBG_ESP_NOW ,COLOR_Red);
+  Serial_Println("Error sending the data",DBG_ESP_NOW ,COLOR_Red);
   return false;
 }
 

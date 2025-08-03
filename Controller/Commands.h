@@ -20,5 +20,7 @@ enum Serial_Color
 bool Debug_Enabled(Debug_Flag flag);
 void Serial_Print(String text, Debug_Flag flag);
 void Serial_Print(String text, Debug_Flag flag, Serial_Color color);
+void Serial_Println(String text, Debug_Flag flag);
+void Serial_Println(String text, Debug_Flag flag, Serial_Color color);
 
 #endif

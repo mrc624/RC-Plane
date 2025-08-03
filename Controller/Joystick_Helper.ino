@@ -1,5 +1,6 @@
 #include "Joystick_Helper.h"
 #include "ESP_Now_Helper.h"
+#include "Commands.h"
 
 Joystick_Center Joystick_Centers[4] = {
   {DEFAULT_CENTER_MIN_VAL, DEFAULT_CENTER_MAX_VAL},  // CONTROL_X
@@ -38,12 +39,12 @@ Joystick_Data* ReadThrustJoystick()
 
 void Print_Joystick_Data(Joystick_Data* data)
 {
-  Serial.print("X axis: ");
-  Serial.println(data->x);
-  Serial.print("Y axis: ");
-  Serial.println(data->y);
-  Serial.print("Select: ");
-  Serial.println(data->select);
+  Serial_Print("X axis: ", DBG_JOYSTICK);
+  Serial_Println(String(data->x), DBG_JOYSTICK);
+  Serial_Print("Y axis: ", DBG_JOYSTICK);
+  Serial_Println(String(data->y), DBG_JOYSTICK);
+  Serial_Print("Select: ", DBG_JOYSTICK);
+  Serial_Println(String(data->select), DBG_JOYSTICK);
 }
 
 Controller_Message* Write_Message_With_Joystick_Data()
@@ -99,11 +100,11 @@ void Adjust_Center_Value(int index, int new_value)
 
 void Print_Center(int index)
 {
-  Serial.print("Min: ");
-  Serial.print(Joystick_Centers[index].min);
-  Serial.print(" ");
-  Serial.print("Max: ");
-  Serial.println(Joystick_Centers[index].max);
+  Serial_Print("Min: ", DBG_JOYSTICK);
+  Serial_Print(String(Joystick_Centers[index].min), DBG_JOYSTICK);
+  Serial_Print(" ", DBG_JOYSTICK);
+  Serial_Print("Max: ", DBG_JOYSTICK);
+  Serial_Println(String(Joystick_Centers[index].max), DBG_JOYSTICK);
 }
 
 void Set_Center_Values()
@@ -139,12 +140,12 @@ void Set_Center_Values()
   Adjust_Center_Value(CENTERING_THRUST_Y_IND, Joystick_Centers[CENTERING_THRUST_Y_IND].max + CENTERING_SAFETY_SET);
   Adjust_Center_Value(CENTERING_THRUST_Y_IND, Joystick_Centers[CENTERING_THRUST_Y_IND].min - CENTERING_SAFETY_SET);
 
-  Serial.print("Control X ");
+  Serial_Print("Control X ", DBG_JOYSTICK);
   Print_Center(CENTERING_CONTROL_X_IND);
-  Serial.print("Control Y ");
+  Serial_Print("Control Y ", DBG_JOYSTICK);
   Print_Center(CENTERING_CONTROL_Y_IND);
-  Serial.print("Thrust X ");
+  Serial_Print("Thrust X ", DBG_JOYSTICK);
   Print_Center(CENTERING_THRUST_X_IND);
-  Serial.print("Thrust Y ");
+  Serial_Print("Thrust Y ", DBG_JOYSTICK);
   Print_Center(CENTERING_THRUST_Y_IND);
 }
