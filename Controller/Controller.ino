@@ -18,33 +18,9 @@
   void loop() {
     Handle_Commands();
 
-    controller_message message;
-    Joystick_Data joystick_data = ReadControlJoystick();
-    message.x_axis = joystick_data.x;
-    message.y_axis = joystick_data.y; 
-    message.yaw = 3;
-    message.thrust = 4;
-    message.reverse = joystick_data.select;
-    message.data_response = data_response;
-    data_response = !data_response;
-    Send_Data(message);
-
-    Serial.println("\nControl Data:");
-    Serial.print("Control X axis: ");
-    Serial.println(joystick_data.x);
-    Serial.print("Control Y axis: ");
-    Serial.println(joystick_data.y);
-    Serial.print("Control Select: ");
-    Serial.println(joystick_data.select);
-
-    Joystick_Data thrust_data = ReadThrustJoystick();
-    Serial.println("Thrust Data:");
-    Serial.print("Thrust X axis: ");
-    Serial.println(thrust_data.x);
-    Serial.print("Thrust Y axis: ");
-    Serial.println(thrust_data.y);
-    Serial.print("Thrust Select: ");
-    Serial.println(thrust_data.select);
+    Controller_Message* message = Write_Message_With_Joystick_Data();
+    message->data_response = true;
+    Print_Message(message);
 
     delay(2000);
   }

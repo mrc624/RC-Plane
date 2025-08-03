@@ -20,7 +20,9 @@ typedef struct Joystick_Data
 };
 
 void Joystick_Init();
-Joystick_Data ReadControlJoystick();
-Joystick_Data ReadThrustJoystick();
+Joystick_Data* ReadControlJoystick();
+Joystick_Data* ReadThrustJoystick();
+Controller_Message* Write_Message_With_Joystick_Data();
+void Print_Joystick_Data(Joystick_Data* data);
 
 #endif

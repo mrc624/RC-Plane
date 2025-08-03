@@ -15,7 +15,7 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status)
 void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len)
 {
   digitalWrite(LED_PIN, HIGH); // Turn on LED while receiving data
-  plane_message msg;
+  Plane_Message msg;
   memcpy(&msg, incomingData, sizeof(msg));
   Serial_Print("Bytes received: " + (String)len, DBG_ESP_NOW);
   Serial_Print("Plane Message: " + (String)msg.message, DBG_ESP_NOW);
@@ -75,11 +75,11 @@ bool ESP_Now_Init()
   return true;
 }
 
-bool Send_Data(controller_message message)
+bool Send_Data(Controller_Message* message)
 {
   digitalWrite(LED_PIN, HIGH); // Turn on LED while sending data
   // Send the message
-  esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *) &message, sizeof(message));
+  esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *) message, sizeof(&message));
   
   digitalWrite(LED_PIN, LOW);
   if (result == ESP_OK)
@@ -89,4 +89,18 @@ bool Send_Data(controller_message message)
   }
   Serial_Print("Error sending the data",DBG_ESP_NOW ,COLOR_Red);
   return false;
+}
+
+void Print_Message(Controller_Message* message)
+{
+  Serial.print("X axis: ");
+  Serial.println(message->x_axis);
+  Serial.print("Y axis: ");
+  Serial.println(message->y_axis);
+  Serial.print("Thrust: ");
+  Serial.println(message->thrust);
+  Serial.print("Yaw: ");
+  Serial.println(message->yaw);
+  Serial.print("Response: ");
+  Serial.println(message->data_response);
 }
