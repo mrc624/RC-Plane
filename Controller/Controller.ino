@@ -37,14 +37,14 @@
     Serial.print("Control Select: ");
     Serial.println(joystick_data.select);
 
-    joystick_data = ReadThrustJoystick();
+    Joystick_Data thrust_data = ReadThrustJoystick();
     Serial.println("Thrust Data:");
     Serial.print("Thrust X axis: ");
-    Serial.println(joystick_data.x);
+    Serial.println(thrust_data.x);
     Serial.print("Thrust Y axis: ");
-    Serial.println(joystick_data.y);
+    Serial.println(thrust_data.y);
     Serial.print("Thrust Select: ");
-    Serial.println(joystick_data.select);
+    Serial.println(thrust_data.select);
 
     delay(2000);
   }
