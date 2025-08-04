@@ -54,8 +54,8 @@ Controller_Message* Write_Message_With_Joystick_Data()
   static Controller_Message message;
   message.x_axis = Get_Tick(control->x, Joystick_Centers[CENTERING_CONTROL_X_IND]);
   message.y_axis = Get_Tick(control->y, Joystick_Centers[CENTERING_CONTROL_Y_IND]);
-  message.thrust = Get_Tick(thrust->y, Joystick_Centers[CENTERING_THRUST_X_IND]);
-  message.yaw = Get_Tick(thrust->x, Joystick_Centers[CENTERING_THRUST_Y_IND]);
+  message.thrust = Get_Tick(thrust->y, Joystick_Centers[CENTERING_THRUST_Y_IND]);
+  message.yaw = Get_Tick(thrust->x, Joystick_Centers[CENTERING_THRUST_X_IND]);
   return &message;
 }
 
@@ -109,6 +109,8 @@ void Print_Center(int index)
 
 void Set_Center_Values()
 {
+  Serial_Println("Setting Joystick Center Values...", DBG_JOYSTICK);
+
   Joystick_Centers[CENTERING_CONTROL_X_IND] = {NOT_YET_CENTERED, NOT_YET_CENTERED}; // CONTROL_X
   Joystick_Centers[CENTERING_CONTROL_Y_IND] = {NOT_YET_CENTERED, NOT_YET_CENTERED}; // CONTROL_Y
   Joystick_Centers[CENTERING_THRUST_X_IND] = {NOT_YET_CENTERED, NOT_YET_CENTERED}; // THRUST_X

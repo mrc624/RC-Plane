@@ -1,10 +1,12 @@
 #include "Commands.h"
+#include "Joystick_Helper.h"
 
 enum Commands
 {
   CMD_ESP_Now_Initialized,
   CMD_Help,
   CMD_Mac_Address,
+  CMD_Set_Centering,
   CMD_Type,
   Num_Commands
 };
@@ -14,6 +16,7 @@ String Commands_ToString[Num_Commands] =
   "ESP Now Initilization State",
   "Help",
   "Mac Address",
+  "Set Joystick Centering",
   "Type"
 };
 
@@ -107,6 +110,9 @@ void Handle_Commands()
         break;
       case CMD_Mac_Address:
         Print_Mac_Address();
+        break;
+      case CMD_Set_Centering:
+        Set_Center_Values();
         break;
       case CMD_Type:
         Print_Type();
