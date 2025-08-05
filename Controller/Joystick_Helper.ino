@@ -150,4 +150,22 @@ void Set_Center_Values()
   Print_Center(CENTERING_THRUST_X_IND);
   Serial_Print("Thrust Y ", DBG_JOYSTICK);
   Print_Center(CENTERING_THRUST_Y_IND);
+
+  Controller_Message message;
+  message.x_axis = Joystick_Centers[CENTERING_CONTROL_X_IND].min;
+  message.y_axis = Joystick_Centers[CENTERING_CONTROL_Y_IND].min;
+  message.thrust = Joystick_Centers[CENTERING_THRUST_X_IND].min;
+  message.yaw = Joystick_Centers[CENTERING_THRUST_Y_IND].min;
+  message.reverse = false;
+  message.data_response = false;
+  message.defaults_msg = SENDING_DEFAULT_MAX_CENTER;
+  Send_Data(&message);
+  delay(CENTERING_READING_EVERY_MILLIS);
+  message.x_axis = Joystick_Centers[CENTERING_CONTROL_X_IND].max;
+  message.y_axis = Joystick_Centers[CENTERING_CONTROL_Y_IND].max;
+  message.thrust = Joystick_Centers[CENTERING_THRUST_X_IND].max;
+  message.yaw = Joystick_Centers[CENTERING_THRUST_Y_IND].max;
+  message.defaults_msg = SENDING_DEFAULT_MIN_CENTER;
+  Send_Data(&message);
+  delay(CENTERING_READING_EVERY_MILLIS);
 }

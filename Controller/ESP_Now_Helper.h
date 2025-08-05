@@ -7,6 +7,13 @@
 #define LED_PIN 2
 #define MAX_MESSAGE_LIMIT 50
 
+typedef enum Sending_Defaults
+{
+  SENDING_DEFAULT_MAX_CENTER,
+  SENDING_DEFAULT_MIN_CENTER,
+  SENDING_DEFAULT_NONE
+};
+
 typedef struct Controller_Message
 {
   int x_axis;
@@ -15,6 +22,7 @@ typedef struct Controller_Message
   int thrust;
   bool reverse;
   bool data_response;
+  Sending_Defaults defaults_msg;
 };
 
 typedef struct Plane_Message

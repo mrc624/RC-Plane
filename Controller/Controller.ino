@@ -21,6 +21,8 @@
 
     Controller_Message* message = Write_Message_With_Joystick_Data();
     message->data_response = true;
+    message->reverse = false;
+    message->data_response = SENDING_DEFAULT_NONE;
     Print_Message(message);
     delay(2000);
   }
