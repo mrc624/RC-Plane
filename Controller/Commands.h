@@ -5,6 +5,7 @@ enum Debug_Flag
 {
   DBG_ESP_NOW,
   DBG_JOYSTICK,
+  DBG_MAIN,
   NUM_DEBUGS
 };
 

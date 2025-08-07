@@ -3,6 +3,12 @@
 
 enum Commands
 {
+  CMD_DBG_ESP_Now_Disable,
+  CMD_DBG_ESP_Now_Enable,
+  CMD_DBG_Joystick_Disable,
+  CMD_DBG_Joystick_Enable,
+  CMD_DBG_Main_Disable,
+  CMD_DBG_Main_Enable,
   CMD_ESP_Now_Initialized,
   CMD_Help,
   CMD_Mac_Address,
@@ -15,6 +21,12 @@ enum Commands
 
 String Commands_ToString[Num_Commands] = 
 {
+  "Disable ESP Now Debug",
+  "Enable ESP Now Debug",
+  "Disable Joystick Debug",
+  "Enable Joystick Debug",
+  "Disable Main Debug",
+  "Enable Main Debug",
   "ESP Now Initilization State",
   "Help",
   "Mac Address",
@@ -24,8 +36,9 @@ String Commands_ToString[Num_Commands] =
   "Type"
 };
 
-bool Debug_ESP_NOW = true;
-bool Debug_Joystick = true;
+bool Debug_ESP_NOW = false;
+bool Debug_Joystick = false;
+bool Debug_Main = false;
 
 bool Debug_Enabled(Debug_Flag flag)
 {
@@ -37,8 +50,13 @@ bool Debug_Enabled(Debug_Flag flag)
     case DBG_JOYSTICK:
       return Debug_Joystick;
       break;
+    case DBG_MAIN:
+      return Debug_Main;
+      break;
+    default:
+      return false;
+      break;
   }
-  return false;
 }
 
 void Serial_Println(String text, Debug_Flag flag)
@@ -109,6 +127,21 @@ void Handle_Commands()
     }
     switch(command)
     {
+      case CMD_DBG_ESP_Now_Disable:
+      case CMD_DBG_ESP_Now_Enable:
+        Debug_ESP_NOW = command == CMD_DBG_ESP_Now_Enable;
+        Serial.println(Commands_ToString[(int)command] + ": " + (String)(Debug_ESP_NOW ? "Enabled" : "Disabled"));
+        break;
+      case CMD_DBG_Joystick_Disable:
+      case CMD_DBG_Joystick_Enable:
+        Debug_Joystick = command == CMD_DBG_Joystick_Disable;
+        Serial.println(Commands_ToString[(int)command] + ": " + (String)(Debug_Joystick ? "Enabled" : "Disabled"));
+        break;
+      case CMD_DBG_Main_Disable:
+      case CMD_DBG_Main_Enable:
+        Debug_Main = command == CMD_DBG_Main_Enable;
+        Serial.println(Commands_ToString[(int)command] + ": " + (String)(Debug_Main ? "Enabled" : "Disabled"));
+        break;
       case CMD_ESP_Now_Initialized:
         Print_ESP_Initialized();
         break;
