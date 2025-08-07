@@ -6,7 +6,9 @@ enum Commands
   CMD_ESP_Now_Initialized,
   CMD_Help,
   CMD_Mac_Address,
+#ifndef USE_DEFAULT_CENTER
   CMD_Set_Centering,
+#endif
   CMD_Type,
   Num_Commands
 };
@@ -16,7 +18,9 @@ String Commands_ToString[Num_Commands] =
   "ESP Now Initilization State",
   "Help",
   "Mac Address",
+#ifndef USE_DEFAULT_CENTER
   "Set Joystick Centering",
+#endif
   "Type"
 };
 
@@ -111,9 +115,11 @@ void Handle_Commands()
       case CMD_Mac_Address:
         Print_Mac_Address();
         break;
+#ifndef USE_DEFAULT_CENTER
       case CMD_Set_Centering:
         Set_Center_Values();
         break;
+#endif
       case CMD_Type:
         Print_Type();
         break;

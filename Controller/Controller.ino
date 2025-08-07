@@ -11,7 +11,9 @@
     Serial.println("===== RC Plane Booting =====");
     ESP_Now_Init();
     Joystick_Init();
+  #ifndef USE_DEFAULT_CENTER
     Set_Center_Values();
+  #endif
   }
 
   bool data_response = false;

@@ -107,6 +107,7 @@ void Print_Center(int index)
   Serial_Println(String(Joystick_Centers[index].max), DBG_JOYSTICK);
 }
 
+#ifndef USE_DEFAULT_CENTER
 void Set_Center_Values()
 {
   Serial_Println("Setting Joystick Center Values...", DBG_JOYSTICK);
@@ -169,3 +170,4 @@ void Set_Center_Values()
   Send_Data(&message);
   delay(CENTERING_READING_EVERY_MILLIS);
 }
+#endif
