@@ -6,13 +6,13 @@ uint8_t broadcastAddress[6] = {0xC0, 0x5D, 0x89, 0xB0, 0xAD, 0xC0};
 esp_now_peer_info_t peerInfo;
 
 // Callback when data is sent
-void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status)
+void OnDataSent(const wifi_tx_info_t *wifi_info, esp_now_send_status_t status)
 {
   Serial_Println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail", DBG_ESP_NOW ,status == ESP_NOW_SEND_SUCCESS ? COLOR_Green : COLOR_Red);
 }
 
 // Callback function that will be executed when data is received
-void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len)
+void OnDataRecv(const esp_now_recv_info_t *recv_info, const uint8_t *incomingData, int len)
 {
   digitalWrite(LED_PIN, HIGH); // Turn on LED while receiving data
   Plane_Message msg;
@@ -24,14 +24,16 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len)
 
 hw_timer_t * Retry_Init_Timer = NULL;
 
-void IRAM_ATTR onTimerRetry() {
+void ARDUINO_ISR_ATTR onTimerRetry() {
   Serial_Println("Trying to initialize ESP Now", DBG_ESP_NOW);
   ESP_Now_Init();
 }
 
 void Init_Timer()
 {
-  Retry_Init_Timer = timerBegin(1);
+  Retry_Init_Timer = timerBegin(1000);
+  timerAttachInterrupt(Retry_Init_Timer, &onTimerRetry);
+  timerAlarm(Retry_Init_Timer, 1000, true, 0);
 }
 
 bool ESP_Now_Init()
@@ -47,7 +49,6 @@ bool ESP_Now_Init()
   if (esp_now_init() != ESP_OK)
   {
     Serial_Println("Failed initializing ESP Now, trying again in 1 second",DBG_ESP_NOW ,COLOR_Red);
-    timerAttachInterrupt(Retry_Init_Timer, &onTimerRetry); // Run the timer to try again
     return false;
   }
   
@@ -65,13 +66,12 @@ bool ESP_Now_Init()
   // Add the peer
   if (esp_now_add_peer(&peerInfo) != ESP_OK)
   {
-    timerAttachInterrupt(Retry_Init_Timer, &onTimerRetry);; // Run the timer to try again
     Serial_Println("Failed adding peer, trying again in 1 second", DBG_ESP_NOW, COLOR_Red);
     return false;
   }
   Serial_Println("ESP Now Initialized", DBG_ESP_NOW);
   ESP_Now_Initialized = true;
-  timerDetachInterrupt(Retry_Init_Timer);
+  timerEnd(Retry_Init_Timer);
   return true;
 }
 

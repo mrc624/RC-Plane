@@ -38,7 +38,7 @@ String Commands_ToString[Num_Commands] =
 
 bool Debug_ESP_NOW = false;
 bool Debug_Joystick = false;
-bool Debug_Main = false;
+bool Debug_Main = true;
 
 bool Debug_Enabled(Debug_Flag flag)
 {
