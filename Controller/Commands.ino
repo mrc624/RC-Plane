@@ -36,9 +36,9 @@ String Commands_ToString[Num_Commands] =
   "Type"
 };
 
-bool Debug_ESP_NOW = true;
+bool Debug_ESP_NOW = false;
 bool Debug_Joystick = false;
-bool Debug_Main = true;
+bool Debug_Main = false;
 
 bool Debug_Enabled(Debug_Flag flag)
 {
@@ -62,13 +62,19 @@ bool Debug_Enabled(Debug_Flag flag)
 void Serial_Println(String text, Debug_Flag flag)
 {
   Serial_Print(text, flag);
-  Serial.println();
+  if (Debug_Enabled(flag))
+  {
+    Serial.println();
+  }
 }
 
 void Serial_Println(String text, Debug_Flag flag, Serial_Color color)
 {
   Serial_Print(text, flag, color);
-  Serial.println();
+  if (Debug_Enabled(flag))
+  {
+    Serial.println();
+  }
 }
 
 void Serial_Print(String text, Debug_Flag flag)
@@ -134,7 +140,7 @@ void Handle_Commands()
         break;
       case CMD_DBG_Joystick_Disable:
       case CMD_DBG_Joystick_Enable:
-        Debug_Joystick = command == CMD_DBG_Joystick_Disable;
+        Debug_Joystick = command == CMD_DBG_Joystick_Enable;
         Serial.println(Commands_ToString[(int)command] + ": " + (String)(Debug_Joystick ? "Enabled" : "Disabled"));
         break;
       case CMD_DBG_Main_Disable:

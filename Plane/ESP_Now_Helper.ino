@@ -6,68 +6,36 @@ uint8_t broadcastAddress[6] = {0xA0, 0xDD, 0x6C, 0xB2, 0x33, 0x9C};
 esp_now_peer_info_t peerInfo;
 
 // Callback when data is sent
-void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status)
+void OnDataSent(const wifi_tx_info_t *wifi_info, esp_now_send_status_t status)
 {
-  Print_Color(status == ESP_NOW_SEND_SUCCESS ? COLOR_Green : COLOR_Red, status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
+  Serial_Println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail", DBG_ESP_NOW ,status == ESP_NOW_SEND_SUCCESS ? COLOR_Green : COLOR_Red);
 }
 
 // Callback function that will be executed when data is received
-void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len)
+void OnDataRecv(const esp_now_recv_info_t *recv_info, const uint8_t *incomingData, int len)
 {
   digitalWrite(LED_PIN, HIGH); // Turn on LED while receiving data
-  controller_message msg;
+  Controller_Message msg;
   memcpy(&msg, incomingData, sizeof(msg));
-  Serial.print("Bytes received: ");
-  Serial.println(len);
-  Serial.print("X-Axis: ");
-  Serial.println(msg.x_axis);
-  Serial.print("Y-Axis: ");
-  Serial.println(msg.y_axis);
-  Serial.print("Yaw: ");
-  Serial.println(msg.yaw);
-  Serial.print("Thrust: ");
-  Serial.println(msg.thrust);
-  Serial.print("Reverse: ");
-  Serial.println(msg.reverse);
-  Serial.print("Data Response: ");
-  Serial.println(msg.data_response);
-  digitalWrite(LED_PIN, LOW);
-
+  Print_Message(&msg);
   if (msg.data_response)
   {
-    plane_message message;
-    sprintf(message.message, "Some info about plane, possibly a fatal flaw");
-
-    Send_Data(message);
+    Plane_Message message;
+    sprintf(message.message, "Some info about the plane, possibly a fatal flaw");
+    Send_Data(&message);
   }
-}
-
-hw_timer_t * Retry_Init_Timer = NULL;
-
-void IRAM_ATTR onTimerRetry() {
-  Serial.println("Trying to initialize ESP Now");
-  ESP_Now_Init();
-}
-
-void Init_Timer()
-{
-  Retry_Init_Timer = timerBegin(1);
+  digitalWrite(LED_PIN, LOW);
 }
 
 bool ESP_Now_Init()
 {
-  if (Retry_Init_Timer == NULL)
-  {
-    pinMode(LED_PIN, OUTPUT);
-    Init_Timer();
-  }
+  pinMode(LED_PIN, OUTPUT);
 
   WiFi.mode(WIFI_STA);
 
   if (esp_now_init() != ESP_OK)
   {
-    Print_Color(COLOR_Red, "Failed initializing ESP Now, trying again in 1 second");
-    timerAttachInterrupt(Retry_Init_Timer, &onTimerRetry); // Run the timer to try again
+    Serial_Println("Failed initializing ESP Now", DBG_ESP_NOW, COLOR_Red);
     return false;
   }
   
@@ -85,28 +53,41 @@ bool ESP_Now_Init()
   // Add the peer
   if (esp_now_add_peer(&peerInfo) != ESP_OK)
   {
-    timerAttachInterrupt(Retry_Init_Timer, &onTimerRetry);; // Run the timer to try again
-    Print_Color(COLOR_Red, "Failed adding peer, trying again in 1 second");
+    Serial_Println("Failed adding peer", DBG_ESP_NOW, COLOR_Red);
     return false;
   }
-  Serial.println("ESP Now Initialized");
+  Serial_Println("ESP Now Initialized", DBG_ESP_NOW);
   ESP_Now_Initialized = true;
-  timerDetachInterrupt(Retry_Init_Timer);
   return true;
 }
 
-bool Send_Data(plane_message message)
+bool Send_Data(Plane_Message* message)
 {
-  digitalWrite(LED_PIN, HIGH); // Turn on LED while sending data
   // Send the message
-  esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *) &message, sizeof(message));
-  
-  digitalWrite(LED_PIN, LOW);
+  esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *) message, sizeof(Plane_Message));
+
   if (result == ESP_OK)
   {
-    Print_Color(COLOR_Green, "Sent with success");
+    Serial_Println("Sent with success",DBG_ESP_NOW ,COLOR_Green);
     return true;
   }
-  Print_Color(COLOR_Red, "Error sending the data");
+  Serial_Println("Error sending the data",DBG_ESP_NOW ,COLOR_Red);
   return false;
+}
+
+void Print_Message(Controller_Message* message)
+{
+  if (Debug_Enabled(DBG_ESP_NOW))
+  {
+    Serial_Print("X-Axis: ", DBG_ESP_NOW);
+    Serial_Println(String(message->x_axis), DBG_ESP_NOW);
+    Serial_Print("Y-Axis: ", DBG_ESP_NOW);
+    Serial_Println(String(message->y_axis), DBG_ESP_NOW);
+    Serial_Print("Thrust: ", DBG_ESP_NOW);
+    Serial_Println(String(message->thrust), DBG_ESP_NOW);
+    Serial_Print("Yaw: ", DBG_ESP_NOW);
+    Serial_Println(String(message->yaw), DBG_ESP_NOW);
+    Serial_Print("Rsponse: ", DBG_ESP_NOW);
+    Serial_Println(String(message->data_response), DBG_ESP_NOW);
+  }
 }

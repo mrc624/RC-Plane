@@ -7,7 +7,16 @@
 #define LED_PIN 2
 #define MAX_MESSAGE_LIMIT 50
 
-typedef struct controller_message
+#ifndef USE_DEFAULT_CENTER
+typedef enum Sending_Defaults
+{
+  SENDING_DEFAULT_MAX_CENTER,
+  SENDING_DEFAULT_MIN_CENTER,
+  SENDING_DEFAULT_NONE
+};
+#endif
+
+typedef struct Controller_Message
 {
   int x_axis;
   int y_axis;
@@ -15,17 +24,18 @@ typedef struct controller_message
   int thrust;
   bool reverse;
   bool data_response;
-} controller_message;
+};
 
-typedef struct plane_message
+typedef struct Plane_Message
 {
   char message[MAX_MESSAGE_LIMIT];
-} plane_message;
+};
 
 bool ESP_Now_Initialized = false;
 
 bool ESP_Now_Init();
 bool Is_ESP_Now_Initialized();
-bool Send_Data(plane_message message);
+bool Send_Data(Plane_Message* message);
+void Print_Message(Controller_Message* message);
 
 #endif

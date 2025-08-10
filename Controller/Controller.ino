@@ -3,7 +3,7 @@
   #include "Joystick_Helper.h"
 
   #define THIS_MAC "a0:dd:6c:b2:33:9c"
-  #define SEND_DATA_TIMES_PER_SECOND 1
+  #define SEND_DATA_TIMES_PER_SECOND 10
   #define TIMER_FREQ 1000000
 
   hw_timer_t * SendMessageTimer = NULL;
@@ -25,7 +25,7 @@
   void setup() {
     Serial.begin(115200);
     delay(1000);
-    Serial.println("===== RC Plane Booting =====");
+    Serial.println("===== RC Plane Controller Booting =====");
     ESP_Now_Init();
     Joystick_Init();
   #ifndef USE_DEFAULT_CENTER

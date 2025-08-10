@@ -25,6 +25,10 @@ Joystick_Data* ReadControlJoystick()
   data.x = analogRead(CONTROL_X_PIN);
   data.y = analogRead(CONTROL_Y_PIN);
   data.select = digitalRead(CONTROL_SELECT_PIN) == LOW; // switch so it is true when it is pushed
+  if(Debug_Enabled(DBG_JOYSTICK))
+  {
+    Print_Joystick_Data(&data);
+  }
   return &data;
 }
 
@@ -34,6 +38,10 @@ Joystick_Data* ReadThrustJoystick()
   data.x = analogRead(THRUST_X_PIN);
   data.y = analogRead(THRUST_Y_PIN);
   data.select = digitalRead(THRUST_SELECT_PIN) == LOW; // switch so it is true when it is pushed
+  if(Debug_Enabled(DBG_JOYSTICK))
+  {
+    Print_Joystick_Data(&data);
+  }
   return &data;
 }
 

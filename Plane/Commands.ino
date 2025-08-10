@@ -2,6 +2,10 @@
 
 enum Commands
 {
+  CMD_DBG_ESP_Now_Disable,
+  CMD_DBG_ESP_Now_Enable,
+  CMD_DBG_Main_Disable,
+  CMD_DBG_Main_Enable,
   CMD_ESP_Now_Initialized,
   CMD_Help,
   CMD_Mac_Address,
@@ -11,30 +15,87 @@ enum Commands
 
 String Commands_ToString[Num_Commands] = 
 {
+  "Disable ESP Now Debug",
+  "Enable ESP Now Debug",
+  "Disable Main Debug",
+  "Enable Main Debug",
   "ESP Now Initilization State",
   "Help",
   "Mac Address",
   "Type"
 };
 
-void Print_Color(Serial_Color color, String text)
+bool Debug_ESP_NOW = false;
+bool Debug_Main = false;
+
+bool Debug_Enabled(Debug_Flag flag)
+{
+  switch(flag)
+  {
+    case DBG_ESP_NOW:
+      return Debug_ESP_NOW;
+      break;
+    case DBG_MAIN:
+      return Debug_Main;
+      break;
+    default:
+      return false;
+      break;
+  }
+}
+
+void Serial_Println(String text, Debug_Flag flag)
+{
+  Serial_Print(text, flag);
+  if (Debug_Enabled(flag))
+  {
+    Serial.println();
+  }
+}
+
+void Serial_Println(String text, Debug_Flag flag, Serial_Color color)
+{
+  Serial_Print(text, flag, color);
+  if (Debug_Enabled(flag))
+  {
+    Serial.println();
+  }
+}
+
+void Serial_Print(String text, Debug_Flag flag)
+{
+  if (Debug_Enabled(flag))
+  {
+    Serial.print(text);
+  }
+}
+
+void Serial_Print(String text, Debug_Flag flag, Serial_Color color)
+{
+  if (Debug_Enabled(flag))
+  {
+    Print_Color(text, color);
+  }
+}
+
+void Print_Color(String text, Serial_Color color)
 {
   switch (color)
   {
     case COLOR_Red:
-      Serial.println("\033[31m" + text + "\033[0m");
+      Serial.print("\033[31m" + text + "\033[0m");
       break;
     case COLOR_Green:
-      Serial.println("\033[32m" + text + "\033[0m");
+      Serial.print("\033[32m" + text + "\033[0m");
       break;
     case COLOR_Blue:
-      Serial.println("\033[34m" + text + "\033[0m");
+      Serial.print("\033[34m" + text + "\033[0m");
       break;
     case COLOR_Yellow:
-      Serial.println("\033[33m" + text + "\033[0m");
+      Serial.print("\033[33m" + text + "\033[0m");
       break;
     default:
-      Serial.println(text);
+      Serial.print(text);
       break;
   }
 }
@@ -57,6 +118,16 @@ void Handle_Commands()
     }
     switch(command)
     {
+      case CMD_DBG_ESP_Now_Disable:
+      case CMD_DBG_ESP_Now_Enable:
+        Debug_ESP_NOW = command == CMD_DBG_ESP_Now_Enable;
+        Serial.println(Commands_ToString[(int)command] + ": " + (String)(Debug_ESP_NOW ? "Enabled" : "Disabled"));
+        break;
+      case CMD_DBG_Main_Disable:
+      case CMD_DBG_Main_Enable:
+        Debug_Main = command == CMD_DBG_Main_Enable;
+        Serial.println(Commands_ToString[(int)command] + ": " + (String)(Debug_Main ? "Enabled" : "Disabled"));
+        break;
       case CMD_ESP_Now_Initialized:
         Print_ESP_Initialized();
         break;
@@ -107,5 +178,5 @@ void Print_Mac_Address()
 
 void Print_Type()
 {
-  Serial.println("Type:          Plane");
+  Serial.println("Type:          Controller");
 }

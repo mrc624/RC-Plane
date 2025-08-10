@@ -1,7 +1,7 @@
 #include "Commands.h"
 
-// Controller's MAC Address
-uint8_t broadcastAddress[6] = {0xC0, 0x5D, 0x89, 0xB0, 0xAD, 0xC0};
+// Plane's MAC Address
+uint8_t broadcastAddress[6] = {0x3C, 0x8A, 0x1F, 0x9D, 0xBD, 0xB8};
 
 esp_now_peer_info_t peerInfo;
 
@@ -18,12 +18,15 @@ void OnDataRecv(const esp_now_recv_info_t *recv_info, const uint8_t *incomingDat
   Plane_Message msg;
   memcpy(&msg, incomingData, sizeof(msg));
   Serial_Println("Bytes received: " + (String)len, DBG_ESP_NOW);
-  Serial_Println("Plane Message: " + (String)msg.message, DBG_ESP_NOW);
+  Serial_Print("Plane Message: ", DBG_ESP_NOW);
+  Serial_Println(msg.message, DBG_ESP_NOW);
   digitalWrite(LED_PIN, LOW);
 }
 
 bool ESP_Now_Init()
 {
+  pinMode(LED_PIN, OUTPUT);
+
   WiFi.mode(WIFI_STA);
 
   if (esp_now_init() != ESP_OK)
@@ -56,11 +59,14 @@ bool ESP_Now_Init()
 
 bool Send_Data(Controller_Message* message)
 {
-  digitalWrite(LED_PIN, HIGH); // Turn on LED while sending data
   // Send the message
-  esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *) message, sizeof(&message));
+  esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *) message, sizeof(Controller_Message));
 
-  digitalWrite(LED_PIN, LOW);
+  if (Debug_Enabled(DBG_ESP_NOW))
+  {
+    Print_Message(message);
+  }
+
   if (result == ESP_OK)
   {
     Serial_Println("Sent with success",DBG_ESP_NOW ,COLOR_Green);
