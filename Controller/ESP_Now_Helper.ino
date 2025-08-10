@@ -22,33 +22,13 @@ void OnDataRecv(const esp_now_recv_info_t *recv_info, const uint8_t *incomingDat
   digitalWrite(LED_PIN, LOW);
 }
 
-hw_timer_t * Retry_Init_Timer = NULL;
-
-void ARDUINO_ISR_ATTR onTimerRetry() {
-  Serial_Println("Trying to initialize ESP Now", DBG_ESP_NOW);
-  ESP_Now_Init();
-}
-
-void Init_Timer()
-{
-  Retry_Init_Timer = timerBegin(1000);
-  timerAttachInterrupt(Retry_Init_Timer, &onTimerRetry);
-  timerAlarm(Retry_Init_Timer, 1000, true, 0);
-}
-
 bool ESP_Now_Init()
 {
-  if (Retry_Init_Timer == NULL)
-  {
-    pinMode(LED_PIN, OUTPUT);
-    Init_Timer();
-  }
-
   WiFi.mode(WIFI_STA);
 
   if (esp_now_init() != ESP_OK)
   {
-    Serial_Println("Failed initializing ESP Now, trying again in 1 second",DBG_ESP_NOW ,COLOR_Red);
+    Serial_Println("Failed initializing ESP Now",DBG_ESP_NOW, COLOR_Red);
     return false;
   }
   
@@ -66,12 +46,11 @@ bool ESP_Now_Init()
   // Add the peer
   if (esp_now_add_peer(&peerInfo) != ESP_OK)
   {
-    Serial_Println("Failed adding peer, trying again in 1 second", DBG_ESP_NOW, COLOR_Red);
+    Serial_Println("Failed adding peer", DBG_ESP_NOW, COLOR_Red);
     return false;
   }
   Serial_Println("ESP Now Initialized", DBG_ESP_NOW);
   ESP_Now_Initialized = true;
-  timerEnd(Retry_Init_Timer);
   return true;
 }
 

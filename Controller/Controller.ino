@@ -19,7 +19,6 @@
     SendMessageTimer = timerBegin(TIMER_FREQ);
     timerAttachInterrupt(SendMessageTimer, &SendMessage);
     timerAlarm(SendMessageTimer, TIMER_FREQ / SEND_DATA_TIMES_PER_SECOND, true, 0);
-    //timerStart(SendMessageTimer);
     Serial_Println("Timer Initialized", DBG_MAIN);
   }
 
@@ -27,7 +26,7 @@
     Serial.begin(115200);
     delay(1000);
     Serial.println("===== RC Plane Booting =====");
-    //ESP_Now_Init();
+    ESP_Now_Init();
     Joystick_Init();
   #ifndef USE_DEFAULT_CENTER
     Set_Center_Values();
@@ -42,7 +41,8 @@
 
     if (send_data)
     {
-      Serial_Println("Message", DBG_MAIN);
+      Controller_Message* message = Write_Message_With_Joystick_Data();
+      Send_Data(message);
       send_data = false;
     }
   }
