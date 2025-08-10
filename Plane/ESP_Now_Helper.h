@@ -6,6 +6,7 @@
 
 #define LED_PIN 2
 #define MAX_MESSAGE_LIMIT 50
+#define MAX_TICK 35
 
 #ifndef USE_DEFAULT_CENTER
 typedef enum Sending_Defaults

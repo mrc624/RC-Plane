@@ -1,4 +1,5 @@
 #include "Commands.h"
+#include "Thrust_Helper.h"
 
 // Controller's MAC Address
 uint8_t broadcastAddress[6] = {0xA0, 0xDD, 0x6C, 0xB2, 0x33, 0x9C};
@@ -24,6 +25,7 @@ void OnDataRecv(const esp_now_recv_info_t *recv_info, const uint8_t *incomingDat
     sprintf(message.message, "Some info about the plane, possibly a fatal flaw");
     Send_Data(&message);
   }
+  Set_Thrust_With_Tick(-msg.thrust);
   digitalWrite(LED_PIN, LOW);
 }
 
