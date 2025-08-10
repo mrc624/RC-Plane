@@ -76,6 +76,10 @@ int Get_Tick(int axis_value, Joystick_Center center)
     {
       tick--;
     }
+    if (tick < -DEFAULT_MAX_TICK)
+    {
+      return -DEFAULT_MAX_TICK;
+    }
     return tick;
   }
   else if (axis_value > center.max)
@@ -84,6 +88,10 @@ int Get_Tick(int axis_value, Joystick_Center center)
     for (int i = axis_value; i > center.max; i -= TICK_VAL)
     {
       tick++;
+    }
+    if (tick > DEFAULT_MAX_TICK)
+    {
+      return DEFAULT_MAX_TICK;
     }
     return tick;
   }
