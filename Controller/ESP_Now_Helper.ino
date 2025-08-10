@@ -5,6 +5,9 @@ uint8_t broadcastAddress[6] = {0x3C, 0x8A, 0x1F, 0x9D, 0xBD, 0xB8};
 
 esp_now_peer_info_t peerInfo;
 
+uint message_attempt_count = 0;
+uint message_delivered_count = 0;
+
 // Callback when data is sent
 void OnDataSent(const wifi_tx_info_t *wifi_info, esp_now_send_status_t status)
 {
@@ -66,10 +69,11 @@ bool Send_Data(Controller_Message* message)
   {
     Print_Message(message);
   }
-
+  message_attempt_count++;
   if (result == ESP_OK)
   {
     Serial_Println("Sent with success",DBG_ESP_NOW ,COLOR_Green);
+    message_delivered_count++;
     return true;
   }
   Serial_Println("Error sending the data",DBG_ESP_NOW ,COLOR_Red);
