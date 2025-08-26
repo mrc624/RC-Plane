@@ -1,5 +1,6 @@
 #include "Commands.h"
 #include "Thrust_Helper.h"
+#include "Servo_Helper.h"
 
 // Controller's MAC Address
 uint8_t broadcastAddress[6] = {0xA0, 0xDD, 0x6C, 0xB2, 0x33, 0x9C};
@@ -26,6 +27,11 @@ void OnDataRecv(const esp_now_recv_info_t *recv_info, const uint8_t *incomingDat
     Send_Data(&message);
   }
   Set_Thrust_With_Tick(-msg.thrust);
+  Set_Servo_With_Tick(SERVO_MAIN_RIGHT, msg.x_axis);
+  Set_Servo_With_Tick(SERVO_MAIN_LEFT, -msg.x_axis);
+  Set_Servo_With_Tick(SERVO_BACK_RIGHT, msg.y_axis);
+  Set_Servo_With_Tick(SERVO_BACK_LEFT, msg.y_axis);
+  Set_Servo_With_Tick(SERVO_YAW, msg.yaw);
   digitalWrite(LED_PIN, LOW);
 }
 

@@ -1,6 +1,7 @@
   #include "Commands.h"
   #include "ESP_Now_Helper.h"
   #include "Thrust_Helper.h"
+  #include "Servo_Helper.h"
 
   #define THIS_MAC "3c:8a:1f:9d:bd:b8"
 
@@ -8,6 +9,7 @@
     Serial.begin(115200);
     delay(1000);
     Serial.println("===== RC Plane Booting =====");
+    Init_Servos();
     Init_Thrust();
     ESP_Now_Init();
   }

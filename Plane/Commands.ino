@@ -178,5 +178,5 @@ void Print_Mac_Address()
 
 void Print_Type()
 {
-  Serial.println("Type:          Controller");
+  Serial.println("Type:          Plane");
 }
